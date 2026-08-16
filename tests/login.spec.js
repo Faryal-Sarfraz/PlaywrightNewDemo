@@ -16,5 +16,7 @@ test('login test', async ({ page }) => {
 
 test('Invalid login test', async ({ page }) => {
        await loginPage.login('Admin', 'wrongpassword');
+       const errorMessage = await loginPage.getErrorMessage();
+       expect(errorMessage).toBe('Invalid credentials');
 });
 });
