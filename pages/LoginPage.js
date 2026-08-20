@@ -1,26 +1,24 @@
-class LoginPage {
+const { BasePage } = require('./BasePage');
+
+class LoginPage extends BasePage {
   constructor(page) {
-    this.page = page;
+    super(page);
     this.usernameInput = page.getByRole('textbox', { name: 'Username' });
     this.passwordInput = page.getByRole('textbox', { name: 'Password' });
     this.loginButton = page.getByRole('button', { name: 'Login' });
     this.errorMessage = page.getByText('Invalid credentials');
-    
   }
 
-  async navigate() {
-    await this.page.goto('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
+  async login(username = this.username, password = this.password) {
+    await this.fill(this.usernameInput, username);
+    await this.fill(this.passwordInput, password);
+    await this.click(this.loginButton);
   }
 
-  async login(username, password) {
-    await this.usernameInput.fill(username);
-    await this.passwordInput.fill(password);
-    await this.loginButton.click();
-  }
-
-  async getErrorMessage() {
-    return await this.errorMessage.textContent();
+   async getErrorMessage() {
+    return await this.getText(this.errorMessage);
   }
 }
 
   module.exports = { LoginPage };
+  
