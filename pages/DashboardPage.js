@@ -1,6 +1,8 @@
-class DashboardPage {
+const { BasePage } = require('./BasePage');
+
+class DashboardPage extends BasePage {
   constructor(page) {
-    this.page = page;
+    super(page);
     this.profileMenu = page.getByRole('img', { name: 'Profile picture' });
     this.dashboardHeader = page.getByRole('heading', { name: 'Dashboard' });
     this.searchInput = page.getByRole('textbox', { name: 'Search' });
@@ -9,19 +11,19 @@ class DashboardPage {
   }
 
   async getDashboardHeaderText() {
-    return await this.dashboardHeader.textContent();
+    return await this.getText(this.dashboardHeader);
   }
 
   async openProfileMenu() {
-    await this.profileMenu.click();
+    await this.click(this.profileMenu);
   }
 
   async search(term) {
-    await this.searchInput.fill(term);
+    await this.fill(this.searchInput, term);
   }
 
   async getSidepanelLabelText() {
-    return await this.sidepanelLabel.textContent();
+    return await this.getText(this.sidepanelLabel);
   }
 
   async isLeaveMenuVisible() {
@@ -30,7 +32,7 @@ class DashboardPage {
 
   async clickLeaveMenu() {
     await this.leaveLink.waitFor({ state: 'visible' });
-    await this.leaveLink.click();
+    await this.click(this.leaveLink);
   }
 }
 
