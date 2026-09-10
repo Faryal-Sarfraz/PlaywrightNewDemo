@@ -1,16 +1,17 @@
 # Playwright Automation Framework
 
-This project is a Playwright-based UI automation framework for validating the OrangeHRM login flow and dashboard access.
+This project is a Playwright-based UI automation suite for OrangeHRM, built with a Page Object Model (POM), reusable fixtures, and CI-safe credential handling.
 
 ## Overview
 
-The framework follows a Page Object Model (POM) design pattern to keep locators and user actions separated from the test logic. It includes:
+The framework includes:
 
-- Playwright test runner setup
-- Page objects for login and dashboard pages
-- Environment-based configuration using `.env`
-- Allure reporting integration
-- Browser automation for Chromium
+- Playwright test runner with Chromium project setup
+- Shared page objects for Login, Dashboard, and Leave flows
+- Reusable fixtures for authenticated access
+- Environment-based configuration through `.env`
+- CI validation for required secrets before running tests
+- Allure reporting for test results
 
 ## Tech Stack
 
@@ -18,29 +19,38 @@ The framework follows a Page Object Model (POM) design pattern to keep locators 
 - JavaScript
 - Node.js
 - dotenv
-- Allure Report
+- Allure Playwright
 
 ## Project Structure
 
 ```text
 PlaywrightNewDemo/
+├── .github/
+│   └── workflows/
+│       └── playwright.yml
+├── fixtures/
+│   └── index.js
 ├── pages/
 │   ├── BasePage.js
 │   ├── LoginPage.js
-│   └── DashboardPage.js
+│   ├── DashboardPage.js
+│   └── LeavePage.js
 ├── tests/
-│   └── login.spec.js
+│   ├── login.spec.js
+│   ├── dashboard.spec.js
+│   └── leave.spec.js
 ├── .env
 ├── playwright.config.js
 ├── package.json
-├── package-lock.json
 ├── README.md
-└── playwright-report/
+├── playwright-report/
+├── test-results/
+└── allure-results/
 ```
 
 ## Prerequisites
 
-Make sure you have the following installed:
+Make sure the following are installed:
 
 - Node.js
 - npm
@@ -53,17 +63,23 @@ npm install
 
 ## Environment Configuration
 
-Create a `.env` file in the project root with the following values:
+Create a `.env` file in the project root with the required values:
 
 ```env
 BASE_URL=https://opensource-demo.orangehrmlive.com/
-USERNAME=Admin
+APP_USERNAME=Admin
 PASSWORD=admin123
 ```
 
+### Notes
+
+- `APP_USERNAME` is used for the OrangeHRM username.
+- `PASSWORD` is used for the OrangeHRM password.
+- These values are read by the page objects and are validated before login is attempted.
+
 ## Run Tests
 
-Run the full test suite:
+Run the full suite:
 
 ```bash
 npx playwright test
@@ -75,35 +91,73 @@ Run tests in headed mode:
 npx playwright test --headed
 ```
 
+Run a single file:
+
+```bash
+npx playwright test tests/login.spec.js
+```
+
 ## Useful Scripts
 
 ```bash
 npm test
+npm run allure:generate
+npm run allure:open
+npm run allure:serve
 ```
 
 ## Allure Reporting
 
-Generate and view the Allure report:
+Generate HTML report output:
 
 ```bash
-npm run allure:generate
-npm run allure:open
+npx allure generate allure-results --clean -o allure-report
 ```
 
-You can also serve the report directly:
+Open the generated report:
 
 ```bash
-npm run allure:serve
+npx allure open allure-report
 ```
 
-## Current Test Coverage
+Serve the report directly:
 
-The framework currently validates:
+```bash
+npx allure serve allure-results
+```
+
+## CI and Secrets
+
+The GitHub Actions workflow checks for required secrets before the Playwright run starts.
+
+Required repository secrets:
+
+- `APP_USERNAME`
+- `PASSWORD`
+
+The workflow fails early with a clear error if either secret is missing, instead of letting Playwright fail later with undefined credential errors.
+
+## Page Object Pattern
+
+The framework uses a shared `BasePage` to centralize common actions such as:
+
+- navigation
+- click handling
+- fill handling
+- text retrieval
+- locator validation
+
+`LoginPage` extends `BasePage` and validates credentials before attempting login. This prevents undefined values from being passed into Playwright locators and keeps the test code cleaner and safer.
+
+## Current Coverage
+
+The suite currently validates:
 
 - valid login flow
-- invalid login validation message
-- dashboard visibility after successful login
+- invalid login flow
+- dashboard search and navigation
+- leave list filtering/search behavior
 
 ## Notes
 
-This project is designed to be easy to extend with additional page objects and test scenarios as the application grows.
+This project is designed to be easy to extend with more page objects, custom fixtures, and additional end-to-end scenarios as the application grows.
