@@ -8,6 +8,7 @@ class DashboardPage extends BasePage {
     this.searchInput = page.getByRole('textbox', { name: 'Search' });
     this.sidepanelLabel = page.getByLabel('Sidepanel').locator('span');
     this.leaveLink = page.getByRole('link', { name: 'Leave' });
+    this.pimLink = page.getByRole('link', { name: 'PIM' });
   }
 
   async getDashboardHeaderText() {
@@ -33,6 +34,10 @@ class DashboardPage extends BasePage {
   async clickLeaveMenu() {
     await this.leaveLink.waitFor({ state: 'visible' });
     await this.click(this.leaveLink);
+  }
+
+  async clickPimMenu() {
+    await this.click(this.pimLink);
   }
 }
 
