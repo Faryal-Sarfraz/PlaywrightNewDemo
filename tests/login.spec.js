@@ -14,7 +14,7 @@ test.describe('Login Module', () => {
   });
 
   test('login test', async ({ page }) => {
-    allure.epic('Login Tests');
+    allure.epic('Login Module');
     allure.feature('Login Feature');
     allure.story('Valid Login Test');
     allure.description('This test verifies that a user can log in with valid credentials and access the dashboard.');

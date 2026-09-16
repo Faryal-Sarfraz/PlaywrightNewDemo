@@ -1,0 +1,101 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: login.spec.js >> Login Module >> login test
+- Location: tests\login.spec.js:16:3
+
+# Error details
+
+```
+Error: Missing APP_PASSWORD. Set the repository secret APP_PASSWORD before running Playwright tests.
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=e4]:
+  - generic [ref=e6]:
+    - img "company-branding" [ref=e8]
+    - generic [ref=e9]:
+      - heading "Login" [level=5] [ref=e10]
+      - generic [ref=e11]:
+        - generic [ref=e13]:
+          - paragraph [ref=e14]: "Username : Admin"
+          - paragraph [ref=e15]: "Password : admin123"
+        - generic [ref=e16]:
+          - generic [ref=e18]:
+            - generic [ref=e19]:
+              - generic [ref=e20]: 
+              - generic [ref=e21]: Username
+            - textbox "Username" [active] [ref=e23]
+          - generic [ref=e25]:
+            - generic [ref=e26]:
+              - generic [ref=e27]: 
+              - generic [ref=e28]: Password
+            - textbox "Password" [ref=e30]
+          - button "Login" [ref=e32] [cursor=pointer]
+          - paragraph [ref=e34] [cursor=pointer]: Forgot your password?
+      - generic [ref=e35]:
+        - generic [ref=e36]:
+          - link [ref=e37] [cursor=pointer]:
+            - /url: https://www.linkedin.com/company/orangehrm/mycompany/
+          - link [ref=e40] [cursor=pointer]:
+            - /url: https://www.facebook.com/OrangeHRM/
+          - link [ref=e43] [cursor=pointer]:
+            - /url: https://twitter.com/orangehrm?lang=en
+          - link [ref=e46] [cursor=pointer]:
+            - /url: https://www.youtube.com/c/OrangeHRMInc
+        - generic [ref=e49]:
+          - paragraph [ref=e50]: OrangeHRM OS 5.9
+          - paragraph [ref=e51]:
+            - text: © 2005 - 2026
+            - link "OrangeHRM, Inc" [ref=e52] [cursor=pointer]:
+              - /url: http://www.orangehrm.com
+            - text: . All rights reserved.
+  - img "orangehrm-logo" [ref=e54]
+```
+
+# Test source
+
+```ts
+  1  | const { BasePage } = require('./BasePage');
+  2  | 
+  3  | class LoginPage extends BasePage {
+  4  |   constructor(page) {
+  5  |     super(page);
+  6  |     this.usernameInput = this.page.getByRole('textbox', { name: /username/i });
+  7  |     this.passwordInput = this.page.getByRole('textbox', { name: /password/i });
+  8  |     this.loginButton = this.page.getByRole('button', { name: /login/i });
+  9  |     this.errorMessage = this.page.getByText(/invalid credentials/i);
+  10 |   }
+  11 | 
+  12 |   validateCredentials(username, password) {
+  13 |     if (!username || !String(username).trim()) {
+  14 |       throw new Error('Missing APP_USERNAME. Set the repository secret APP_USERNAME before running Playwright tests.');
+  15 |     }
+  16 | 
+  17 |     if (!password || !String(password).trim()) {
+> 18 |       throw new Error('Missing APP_PASSWORD. Set the repository secret APP_PASSWORD before running Playwright tests.');
+     |             ^ Error: Missing APP_PASSWORD. Set the repository secret APP_PASSWORD before running Playwright tests.
+  19 |     }
+  20 |   }
+  21 | 
+  22 |   async login(username = this.username, password = this.password) {
+  23 |     this.validateCredentials(username, password);
+  24 |     await this.fill(this.usernameInput, username);
+  25 |     await this.fill(this.passwordInput, password);
+  26 |     await this.click(this.loginButton);
+  27 |   }
+  28 | 
+  29 |   async getErrorMessage() {
+  30 |     return await this.getText(this.errorMessage);
+  31 |   }
+  32 | }
+  33 | 
+  34 | module.exports = { LoginPage };
+```
