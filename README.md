@@ -7,11 +7,12 @@ This project is a Playwright-based UI automation suite for OrangeHRM, built with
 The framework includes:
 
 - Playwright test runner with Chromium project setup
-- Shared page objects for Login, Dashboard, and Leave flows
+- Shared page objects for Login, Dashboard, Leave, PIM, and Add Employee flows
 - Reusable fixtures for authenticated access
 - Environment-based configuration through `.env`
 - CI validation for required secrets before running tests
 - Allure reporting for test results
+- Dynamic test data generation using Faker.js for employee creation scenarios
 
 ## Tech Stack
 
@@ -19,6 +20,7 @@ The framework includes:
 - JavaScript
 - Node.js
 - dotenv
+- Faker.js
 - Allure Playwright
 
 ## Project Structure
@@ -34,11 +36,14 @@ PlaywrightNewDemo/
 │   ├── BasePage.js
 │   ├── LoginPage.js
 │   ├── DashboardPage.js
-│   └── LeavePage.js
+│   ├── LeavePage.js
+│   ├── PIMPage.js
+│   └── AddEmployeePage.js
 ├── tests/
 │   ├── login.spec.js
 │   ├── dashboard.spec.js
-│   └── leave.spec.js
+│   ├── leave.spec.js
+│   └── addEmployee.spec.js
 ├── .env
 ├── playwright.config.js
 ├── package.json
@@ -104,7 +109,10 @@ npm test
 npm run allure:generate
 npm run allure:open
 npm run allure:serve
+npm install @faker-js/faker
 ```
+
+Faker is used in the employee creation flow to generate realistic names dynamically instead of hardcoded values.
 
 ## Allure Reporting
 
@@ -157,6 +165,22 @@ The suite currently validates:
 - invalid login flow
 - dashboard search and navigation
 - leave list filtering/search behavior
+- PIM navigation
+- employee creation using generated Faker data
+
+## Dynamic Test Data
+
+The add-employee scenario uses `@faker-js/faker` to create random first and last names before submitting the OrangeHRM form. This avoids hardcoded values and helps keep tests reusable and realistic.
+
+Example:
+
+```javascript
+const { faker } = require('@faker-js/faker');
+
+const firstName = faker.person.firstName();
+const lastName = faker.person.lastName();
+const fullName = `${firstName} ${lastName}`;
+```
 
 ## Notes
 
